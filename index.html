@@ -1,188 +1,279 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Sandy's Shop</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandy Shop | Твой яркий магазин</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
 
-<style>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0f1012;
+            color: white;
+            overflow-x: hidden;
+        }
 
-body{
-  margin:0;
-  font-family: Arial;
-  background:#0d1117;
-  color:white;
-}
+        /* Анимированный фон Sandy Style */
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 10% 20%, rgba(251, 191, 36, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            background-size: 150% 150%;
+            animation: meshGradient 12s ease infinite alternate;
+        }
 
-/* ШАПКА */
-header{
-  background:#161b22;
-  border-bottom:1px solid #30363d;
-  padding:18px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+        @keyframes meshGradient {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
 
-.logo{
-  font-size:24px;
-  font-weight:700;
-  color:#58a6ff;
-}
+        /* Эффект стекла */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-nav a{
-  color:#c9d1d9;
-  text-decoration:none;
-  margin-left:20px;
-  font-size:16px;
-}
-nav a:hover{
-  color:white;
-}
+        /* Текст-градиент Sandy */
+        .text-sandy {
+            background: linear-gradient(45deg, #fbbf24, #f472b6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: textFlow 4s linear infinite;
+        }
 
-/* ГЛАВНЫЙ БЛОК */
-.hero{
-  text-align:center;
-  padding:70px 20px;
-}
+        @keyframes textFlow {
+            to { background-position: 200% center; }
+        }
 
-.hero h1{
-  font-size:42px;
-}
+        /* Кастомный яркий скроллбар */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#fbbf24, #f472b6);
+            border-radius: 10px;
+        }
 
-.hero p{
-  opacity:.8;
-  font-size:18px;
-}
+        .product-card {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .product-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(251, 191, 36, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(251, 191, 36, 0.2);
+        }
 
-.btn{
-  display:inline-block;
-  margin-top:18px;
-  padding:12px 25px;
-  border-radius:10px;
-  background:#238636;
-  color:white;
-  text-decoration:none;
-  font-size:18px;
-}
-.btn:hover{
-  background:#2ea043;
-}
-
-/* ТОВАРЫ */
-.shop{
-  max-width:1100px;
-  margin:30px auto;
-  padding:10px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-}
-
-.item{
-  background:#161b22;
-  border:1px solid #30363d;
-  border-radius:12px;
-  padding:15px;
-  text-align:center;
-  transition:.2s;
-}
-
-.item:hover{
-  transform:translateY(-4px);
-  border-color:#58a6ff;
-}
-
-.item img{
-  width:100%;
-  height:200px;
-  object-fit:cover;
-  border-radius:10px;
-}
-
-.item h3{
-  margin:10px 0 5px 0;
-}
-
-.price{
-  color:#2ea043;
-  font-size:20px;
-  margin:5px 0 10px 0;
-}
-
-.buy{
-  display:inline-block;
-  padding:10px 18px;
-  border-radius:8px;
-  background:#58a6ff;
-  color:white;
-  text-decoration:none;
-}
-
-.buy:hover{
-  background:#79c0ff;
-}
-
-/* ПОДВАЛ */
-footer{
-  text-align:center;
-  padding:25px;
-  margin-top:30px;
-  opacity:.7;
-}
-
-</style>
+        .cart-bounce { animation: bounce 0.5s ease; }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-  <div class="logo">Sandy's Shop</div>
+    <div class="mesh-bg"></div>
 
-  <nav>
-    <a href="#">Главная</a>
-    <a href="#shop">Магазин</a>
-    <a href="#contact">Контакты</a>
-  </nav>
-</header>
+    <nav class="fixed top-0 w-full z-50 glass py-4 px-6 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-gradient-to-tr from-amber-400 to-pink-500 rounded-lg rotate-12"></div>
+            <span class="text-2xl font-black tracking-tighter text-sandy">SANDY SHOP</span>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <button onclick="toggleCart()" class="relative p-2 hover:bg-white/5 rounded-full transition-all group">
+                <i data-lucide="shopping-bag" class="group-hover:text-amber-400 transition-colors"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-amber-500 text-black font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">0</span>
+            </button>
+        </div>
+    </nav>
 
-<section class="hero">
-  <h1>Добро пожаловать в Sandy's Shop 😎</h1>
-  <p>Лучшие товары по лучшим ценам</p>
-  <a class="btn" href="#shop">Перейти к покупкам</a>
-</section>
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20">
+        <div class="inline-block px-4 py-1 border border-amber-500/30 rounded-full bg-amber-500/10 text-amber-400 text-sm font-medium mb-6" data-aos="fade-down">
+            New Summer Collection 2025
+        </div>
+        <h1 class="text-7xl md:text-9xl font-black mb-6 tracking-tight" data-aos="zoom-in">
+            SANDY <br> <span class="text-sandy">VIBES</span>
+        </h1>
+        <p class="text-gray-400 max-w-lg mb-10 text-lg" data-aos="fade-up" data-aos-delay="200">
+            Стиль, который сияет ярче солнца. Твой любимый магазин аксессуаров и гаджетов теперь в новом формате.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="400">
+            <a href="#shop" class="bg-amber-500 hover:bg-amber-400 text-black px-10 py-4 rounded-2xl font-black transition-all shadow-xl shadow-amber-500/20 active:scale-95">К покупкам</a>
+            <button class="glass px-10 py-4 rounded-2xl font-bold hover:bg-white/5 transition-all">Коллекции</button>
+        </div>
+    </section>
 
-<section id="shop" class="shop">
+    <section id="shop" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-wrap gap-3 justify-center mb-16" data-aos="fade-up">
+            <button onclick="filterProducts('all')" class="glass px-8 py-3 rounded-xl hover:border-amber-500 transition-all text-sm font-bold uppercase tracking-widest">Все</button>
+            <button onclick="filterProducts('premium')" class="glass px-8 py-3 rounded-xl hover:border-pink-500 transition-all text-sm font-bold uppercase tracking-widest">Premium</button>
+            <button onclick="filterProducts('new')" class="glass px-8 py-3 rounded-xl hover:border-blue-500 transition-all text-sm font-bold uppercase tracking-widest">Новинки</button>
+        </div>
 
-  <div class="item">
-    <img src="https://images.unsplash.com/photo-1606813907291-8b4d5c5f03ad" alt="">
-    <h3>Товар №1</h3>
-    <div class="price">199₴</div>
-    <a class="buy" href="#">Купить</a>
-  </div>
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            </div>
+    </section>
 
-  <div class="item">
-    <img src="https://images.unsplash.com/photo-1512499617640-c2f999098c01" alt="">
-    <h3>Товар №2</h3>
-    <div class="price">299₴</div>
-    <a class="buy" href="#">Купить</a>
-  </div>
+    <div id="cart-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="toggleCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md glass border-l border-white/10 p-8 flex flex-col">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-black italic">CART</h2>
+                <button onclick="toggleCart()" class="p-2 hover:bg-white/10 rounded-full transition-colors"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div id="cart-items" class="flex-1 overflow-y-auto space-y-6 pr-2">
+                </div>
 
-  <div class="item">
-    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="">
-    <h3>Товар №3</h3>
-    <div class="price">499₴</div>
-    <a class="buy" href="#">Купить</a>
-  </div>
+            <div class="pt-8 border-t border-white/10 mt-6">
+                <div class="flex justify-between text-2xl font-black mb-8">
+                    <span>TOTAL</span>
+                    <span id="cart-total" class="text-amber-400">$0</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-gradient-to-r from-amber-500 to-pink-500 py-5 rounded-2xl font-black text-black text-xl hover:opacity-90 transition-all transform active:scale-95">
+                    CHECKOUT
+                </button>
+            </div>
+        </div>
+    </div>
 
-</section>
+    <footer class="py-20 border-t border-white/5 text-center glass relative overflow-hidden">
+        <div class="relative z-10">
+            <div class="text-3xl font-black text-sandy mb-4">SANDY SHOP</div>
+            <p class="text-gray-500 mb-8">Best quality for your digital life.</p>
+            <div class="flex justify-center gap-6 mb-10">
+                <a href="#" class="hover:text-amber-400 transition-colors"><i data-lucide="instagram"></i></a>
+                <a href="#" class="hover:text-amber-400 transition-colors"><i data-lucide="twitter"></i></a>
+                <a href="#" class="hover:text-amber-400 transition-colors"><i data-lucide="github"></i></a>
+            </div>
+            <p class="text-xs text-gray-600 uppercase tracking-[0.3em]">© 2025 Developed with Passion</p>
+        </div>
+    </footer
 
-<section id="contact" class="section">
-  <footer>
-    Связь: твой Telegram / Discord / Email<br>
-    © Sandy's Shop — 2025
-  </footer>
-</section>
+    <script>
+        lucide.createIcons();
+        AOS.init({ duration: 1200, once: false });
 
+        const products = [
+            { id: 1, name: "Golden Glow Watch", category: "premium", price: 420, image: "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&q=80&w=400" },
+            { id: 2, name: "Sandy Pods Pro", category: "new", price: 250, image: "https://images.unsplash.com/photo-1546435770-a3e426ca473b?auto=format&fit=crop&q=80&w=400" },
+            { id: 3, name: "Neon Glass Case", category: "new", price: 45, image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&q=80&w=400" },
+            { id: 4, name: "Amber Lens VR", category: "premium", price: 890, image: "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?auto=format&fit=crop&q=80&w=400" },
+            { id: 5, name: "Cyber Wallet", category: "new", price: 85, image: "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&q=80&w=400" },
+            { id: 6, name: "Sand Storm Mouse", category: "premium", price: 120, image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=400" },
+            { id: 7, name: "Future Glasses", category: "new", price: 310, image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=400" },
+            { id: 8, name: "Pulse Speaker", category: "premium", price: 195, image: "https://images.unsplash.com/photo-1608156639585-34a0a56ee6c9?auto=format&fit=crop&q=80&w=400" }
+        ];
+
+        let cart = [];
+
+        function renderProducts(filter = 'all') {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+            filtered.forEach((p, i) => {
+                grid.innerHTML += `
+                    <div class="product-card glass p-4 rounded-3xl relative group" data-aos="fade-up" data-aos-delay="${i * 50}">
+                        <div class="relative h-64 overflow-hidden rounded-2xl mb-6">
+                            <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                <button onclick="addToCart(${p.id})" class="w-full bg-white text-black py-3 rounded-xl font-bold translate-y-4 group-hover:translate-y-0 transition-transform">ADD TO CART</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">${p.name}</h3>
+                                <span class="text-xs uppercase tracking-tighter text-gray-500">${p.category}</span>
+                            </div>
+                            <span class="text-xl font-black text-amber-400">$${p.price}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function addToCart(id) {
+            const p = products.find(i => i.id === id);
+            cart.push(p);
+            updateCart();
+            
+            const badge = document.getElementById('cart-count');
+            badge.classList.remove('cart-bounce');
+            void badge.offsetWidth; // Trigger reflow
+            badge.classList.add('cart-bounce');
+        }
+
+        function updateCart() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const container = document.getElementById('cart-items');
+            const total = document.getElementById('cart-total');
+            container.innerHTML = '';
+            
+            let sum = 0;
+            cart.forEach((item, i) => {
+                sum += item.price;
+                container.innerHTML += `
+                    <div class="flex items-center gap-4 group">
+                        <img src="${item.image}" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <div class="font-bold text-sm">${item.name}</div>
+                            <div class="text-amber-400 font-black">$${item.price}</div>
+                        </div>
+                        <button onclick="removeFromCart(${i})" class="text-gray-600 hover:text-white transition-colors"><i data-lucide="trash-2" size="18"></i></button>
+                    </div>
+                `;
+            });
+            total.innerText = `$${sum}`;
+            lucide.createIcons();
+        }
+
+        function removeFromCart(i) {
+            cart.splice(i, 1);
+            updateCart();
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-modal').classList.toggle('hidden');
+        }
+
+        function filterProducts(c) {
+            renderProducts(c);
+        }
+
+        function checkout() {
+            if(cart.length === 0) return;
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#fbbf24', '#f472b6', '#ffffff']
+            });
+            alert("SANDY SHOP: Спасибо за заказ!");
+            cart = [];
+            updateCart();
+            toggleCart();
+        }
+
+        renderProducts();
+    </script>
 </body>
 </html>
